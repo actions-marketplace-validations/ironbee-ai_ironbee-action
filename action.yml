@@ -49,6 +49,21 @@ inputs:
     description: 'Project the results attach to. Empty derives it from the git remote.'
     required: false
     default: ''
+  ironbee_environment:
+    description: >-
+      Environment the run is against — the deployment this workflow is verifying,
+      by name (e.g. "staging", "production"). It selects the environment's own
+      variables and secrets on top of the project-wide ones; a name the project
+      has not seen is created by the first run that uses it, and leaving it empty
+      resolves the project-wide ones alone.
+
+      Empty falls back to the deployment environment when the event carries one
+      (`deployment` / `deployment_status`). It cannot be derived otherwise: a
+      job's own `environment:` key is not exposed to the job in any variable or
+      context, so on a push or a pull request there is nothing to read and the
+      workflow has to say which environment it is verifying.
+    required: false
+    default: ''
 
   # ── IronBee — the verification job (platform mode only) ────────────
   ironbee_bind_repository:
@@ -389,6 +404,11 @@ runs:
         INPUT_APP_HEADERS: ${{ inputs.app_headers }}
         INPUT_APP_SECRET_HEADERS: ${{ inputs.app_secret_headers }}
         INPUT_IRONBEE_PROJECT: ${{ inputs.ironbee_project }}
+        # The deployment environment is the one GitHub actually hands us, and
+        # only on a deployment event. A job's own `environment:` key reaches the
+        # job through no variable and no context, so there is nothing else to
+        # fall back to — an unset input on a push simply means no environment.
+        INPUT_IRONBEE_ENVIRONMENT: ${{ inputs.ironbee_environment || github.event.deployment.environment }}
         INPUT_IRONBEE_CONSOLE_URL: ${{ inputs.ironbee_console_url }}
         INPUT_IRONBEE_COLLECTOR_URL: ${{ inputs.ironbee_collector_url }}
         INPUT_IRONBEE_BIND_REPOSITORY: ${{ inputs.ironbee_bind_repository }}

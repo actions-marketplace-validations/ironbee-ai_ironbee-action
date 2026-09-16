@@ -439,6 +439,7 @@ const PLATFORM_ONLY_INPUTS = [
   { name: 'ironbee_bind_repository', key: 'bindRepository', fallback: 'true' },
   { name: 'ironbee_job_timeout_minutes', key: 'jobTimeoutMinutes', fallback: '' },
   { name: 'ironbee_project', key: 'project', fallback: '' },
+  { name: 'ironbee_environment', key: 'environment', fallback: '' },
   { name: 'app_restart_command', key: 'appRestartCommand', fallback: '' },
   { name: 'app_logs_command', key: 'appLogsCommand', fallback: '' },
   { name: 'app_wait_seconds', key: 'appWaitSeconds', fallback: '' },
@@ -654,6 +655,9 @@ function resolvePlan(input) {
     if (present(input.project)) {
       cliArgs.push('--project', String(input.project).trim());
     }
+    if (present(input.environment)) {
+      cliArgs.push('--environment', String(input.environment).trim());
+    }
     if (positiveInt(input.jobTimeoutMinutes) !== null) {
       cliArgs.push('--timeout', String(positiveInt(input.jobTimeoutMinutes) * 60));
     }
@@ -721,6 +725,7 @@ function readInput() {
     appLogsCommand: process.env.INPUT_APP_LOGS_COMMAND,
     appWaitSeconds: process.env.INPUT_APP_WAIT_SECONDS,
     project: process.env.INPUT_IRONBEE_PROJECT,
+    environment: process.env.INPUT_IRONBEE_ENVIRONMENT,
     consoleUrl: process.env.INPUT_IRONBEE_CONSOLE_URL,
     collectorUrl: process.env.INPUT_IRONBEE_COLLECTOR_URL,
     bindRepository: process.env.INPUT_IRONBEE_BIND_REPOSITORY,
