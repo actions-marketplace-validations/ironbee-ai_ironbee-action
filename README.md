@@ -397,6 +397,7 @@ For any IronBee CLI setting not exposed as a dedicated input, pass a JSON object
 | `ironbee_console_url` | No | | IronBee Console hostname (no scheme) for session links in the report. Empty derives it from `ironbee_collector_url`, so a non-production collector does not produce production links |
 | `ironbee_cli_version` | No | `latest` | IronBee CLI version to install. Empty means `latest`, so an `inputs.x \|\| vars.X` chain that resolves to nothing still works |
 | `ironbee_project` | No | | Project the results attach to. Empty derives it from the git remote |
+| `ironbee_environment` | No | | Environment the run is against, by name — selects that environment's variables and secrets on top of the project-wide ones. An unknown name is created by the first run that uses it. Empty falls back to the deployment environment on a `deployment` / `deployment_status` event, and otherwise means no environment: a job's own `environment:` key is not exposed to the job, so nothing else can be derived |
 | **IronBee — the verification job** (platform mode only) | | | |
 | `ironbee_bind_repository` | No | `true` | Bind the run to the repository so the agent reads the changeset. Turn it off to verify the application without repository context — what a private repository the IronBee GitHub App does not cover needs |
 | `ironbee_job_timeout_minutes` | No | | Run timeout for the verification job. Empty uses the API default |

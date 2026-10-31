@@ -453,6 +453,18 @@ test('plan: an explicit project overrides the derived one', () => {
   assert.equal(plan.cliArgs[plan.cliArgs.indexOf('--project') + 1], 'shop');
 });
 
+test('plan: the environment reaches the CLI by name', () => {
+  const plan = resolvePlan(input({ environment: 'staging' }));
+  assert.equal(plan.cliArgs[plan.cliArgs.indexOf('--environment') + 1], 'staging');
+});
+
+// No environment means the project-wide variables and secrets alone. The CLI
+// must not be handed an empty name — the service would create one called "".
+test('plan: no environment sends no --environment', () => {
+  const plan = resolvePlan(input({ environment: '' }));
+  assert.equal(plan.cliArgs.includes('--environment'), false);
+});
+
 // These configure the agent that runs on the runner. In platform mode it does
 // not run, so a workflow carrying them is describing something that is not
 // happening — and silence would let it keep believing so.
